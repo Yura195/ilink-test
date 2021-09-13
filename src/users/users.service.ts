@@ -5,7 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './users.entity';
 
 @Injectable()
-export class UsersService{
+export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -26,15 +26,15 @@ export class UsersService{
     return await this.userRepository.findOne({ id });
   }
 
-  async getUsersByParams(param:any): Promise<User[]> {
+  async getUsersByParams(param: any): Promise<User[]> {
     return await this.userRepository.find(param);
   }
 
-  async delete(id:number) {
+  async delete(id: number) {
     return this.userRepository.softDelete(id);
   }
 
-  async restore(id:number) {
+  async restore(id: number) {
     return this.userRepository.restore(id);
   }
 }

@@ -8,14 +8,17 @@ import {
   Post,
   Put,
   Query,
+  UsePipes,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
+import { ValidationPipe } from './pipes/validation.pipe';
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
   constructor(private userService: UsersService) {}
 
+  @UsePipes(ValidationPipe)
   @Post()
   async createUser(@Body() userDto: CreateUserDto) {
     const user = await this.userService.create(userDto);
@@ -36,6 +39,7 @@ export class UsersController {
     };
   }
 
+  @UsePipes(ValidationPipe)
   @Put(':id')
   async updateUser(@Param('id') id: number, @Body() userDto: CreateUserDto) {
     await this.userService.update(id, userDto);
@@ -57,11 +61,21 @@ export class UsersController {
 
   @Get('restore/:id')
   async restoreUser(@Param('id') id: number) {
-    return await this.userService.restore(id);
+    const userRestore = await this.userService.restore(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User is restored',
+      userRestore,
+    };
   }
 
   @Delete(':id')
   async deleteUser(@Param('id') id: number) {
-    return this.userService.delete(id);
+    const userDelete = this.userService.delete(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User is deleted',
+      userDelete,
+    };
   }
 }
